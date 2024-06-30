@@ -1,0 +1,47 @@
+# Publish all joint states -----------------------------------
+joint_state_controller:
+  type: joint_state_controller/JointStateController
+  publish_rate: 50  
+
+# Position Controllers ---------------------------------------
+# Moving Joints
+front_left_wheel_revolute_controller:
+  type: effort_controllers/JointPositionController
+  joint: front_left_wheel_revolute
+  pid: {p: 100.0, i: 0.0, d: 50.0}
+
+front_right_wheel_revolute_controller:
+  type: effort_controllers/JointPositionController
+  joint: front_right_wheel_revolute
+  pid: {p: 100.0, i: 0.0, d: 50.0}
+
+back_left_wheel_revolute_controller:
+  type: effort_controllers/JointPositionController
+  joint: back_left_wheel_revolute
+  pid: {p: 100.0, i: 0.0, d: 50.0}
+
+back_right_wheel_revolute_controller:
+  type: effort_controllers/JointPositionController
+  joint: back_right_wheel_revolute
+  pid: {p: 100.0, i: 0.0, d: 50.0}
+
+# Steering Joints
+front_left_wheel_rotate_controller:
+  type: effort_controllers/JointVelocityController
+  joint: front_left_wheel_rotate
+  pid: {p: 100.0, i: 0.0, d: 0.0}
+  
+front_right_wheel_rotate_controller:
+  type: effort_controllers/JointVelocityController
+  joint: front_right_wheel_rotate
+  pid: {p: 100.0, i: 0.0, d: 0.0}
+  
+back_left_wheel_rotate_controller:
+  type: effort_controllers/JointVelocityController
+  joint: back_left_wheel_rotate
+  pid: {p: 100.0, i: 0.0, d: 0.0}
+
+back_right_wheel_rotate_controller:
+  type: effort_controllers/JointVelocityController
+  joint: back_right_wheel_rotate
+  pid: {p: 100.0, i: 0.0, d: 0.0}

@@ -1,0 +1,35 @@
+digraph G {
+node [shape=box];
+"base_link" [label="base_link"];
+"chassis" [label="chassis"];
+"back_left_wheel_assembly" [label="back_left_wheel_assembly"];
+"back_left_wheel" [label="back_left_wheel"];
+"back_right_wheel_assembly" [label="back_right_wheel_assembly"];
+"back_right_wheel" [label="back_right_wheel"];
+"front_left_wheel_assembly" [label="front_left_wheel_assembly"];
+"front_left_wheel" [label="front_left_wheel"];
+"front_right_wheel_assembly" [label="front_right_wheel_assembly"];
+"front_right_wheel" [label="front_right_wheel"];
+"sensor_laser" [label="sensor_laser"];
+node [shape=ellipse, color=blue, fontcolor=blue];
+"base_link" -> "base_joint" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"base_joint" -> "chassis"
+"chassis" -> "back_left_wheel_revolute" [label="xyz: -0.25 0.155 0.05 \nrpy: 0 -0 0"]
+"back_left_wheel_revolute" -> "back_left_wheel_assembly"
+"back_left_wheel_assembly" -> "back_left_wheel_rotate" [label="xyz: 0 0.022 0 \nrpy: 0 -0 0"]
+"back_left_wheel_rotate" -> "back_left_wheel"
+"chassis" -> "back_right_wheel_revolute" [label="xyz: -0.25 -0.155 0.05 \nrpy: 0 -0 0"]
+"back_right_wheel_revolute" -> "back_right_wheel_assembly"
+"back_right_wheel_assembly" -> "back_right_wheel_rotate" [label="xyz: 0 -0.022 0 \nrpy: 0 -0 0"]
+"back_right_wheel_rotate" -> "back_right_wheel"
+"chassis" -> "front_left_wheel_revolute" [label="xyz: 0.25 0.155 0.05 \nrpy: 0 -0 0"]
+"front_left_wheel_revolute" -> "front_left_wheel_assembly"
+"front_left_wheel_assembly" -> "front_left_wheel_rotate" [label="xyz: 0 0.022 0 \nrpy: 0 -0 0"]
+"front_left_wheel_rotate" -> "front_left_wheel"
+"chassis" -> "front_right_wheel_revolute" [label="xyz: 0.25 -0.155 0.05 \nrpy: 0 -0 0"]
+"front_right_wheel_revolute" -> "front_right_wheel_assembly"
+"front_right_wheel_assembly" -> "front_right_wheel_rotate" [label="xyz: 0 -0.022 0 \nrpy: 0 -0 0"]
+"front_right_wheel_rotate" -> "front_right_wheel"
+"chassis" -> "joint_sensor_laser" [label="xyz: 0.13 0 0.175 \nrpy: 0 -0 0"]
+"joint_sensor_laser" -> "sensor_laser"
+}
