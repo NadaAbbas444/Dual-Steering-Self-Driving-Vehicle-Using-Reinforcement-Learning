@@ -1,0 +1,200 @@
+<?xml version="1.0"?>
+<robot name="my_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+	<xacro:include filename="$(find my_robot_description)/urdf/robot_macros.xacro"/>
+	<xacro:include filename="$(find my_robot_description)/urdf/robot_properties.xacro"/>
+	<xacro:include filename="$(find my_robot_description)/urdf/robot_materials.xacro"/>
+
+	<!-- Base Link Start (important for rviz launch)-->
+	<link name="base_link">
+		<visual>
+			<geometry>
+				<box size="0.01 0.01 0.01"/>
+			</geometry>
+		</visual>
+	</link>
+
+	<!-- Chassis Start-->
+	<joint name="base_joint" type="fixed">
+		<parent link="base_link"/>
+		<child link="chassis"/>
+	</joint>
+
+	<link name="chassis">
+		<collision>
+			<origin xyz="0 0 ${chassisHeight/2 + wheelRadius}" 
+					rpy="0 0 0"/>
+			<geometry>
+				<box size="${chassisLength} ${chassisWidth} ${chassisHeight}"/>
+			</geometry>
+		</collision>
+		<visual>
+			<origin xyz="0 0 ${chassisHeight/2 + wheelRadius}" 
+					rpy="0 0 0"/>
+			<geometry>
+				<box size="${chassisLength} ${chassisWidth} ${chassisHeight}"/>
+			</geometry>
+			<material name="green"/>
+		</visual>
+		<inertial>
+			<origin xyz="0 0 ${chassisHeight/2 + wheelRadius}" 
+					rpy="0 0 0"/>
+			<mass value="${chassisMass}"/>
+			<xacro:box_inertia 
+				m="${chassisMass}" 
+				x="${chassisLength}" 
+				y="${chassisWidth}" 
+				z="${chassisHeight}"/>
+			<!--inertia ixx="0.04" ixy="0.0" ixz="0.0" iyy="0.52" iyz="0.0" izz="0.52"/-->
+		</inertial>
+	</link>
+
+	<link name="chassis_2">
+		<collision>
+			<origin xyz="0 0 ${chassisHeight_2/2 + wheelRadius + chassisHeight}" 
+					rpy="0 0 0"/>
+			<geometry>
+				<box size="${chassisLength_2} ${chassisWidth_2} ${chassisHeight_2}"/>
+			</geometry>
+		</collision>
+		<visual>
+			<origin xyz="0 0 ${chassisHeight_2/2 + wheelRadius + chassisHeight}" 
+					rpy="0 0 0"/>
+			<geometry>
+				<box size="${chassisLength_2} ${chassisWidth_2} ${chassisHeight_2}"/>
+			</geometry>
+			<material name="orange"/>
+		</visual>
+		<inertial>
+			<origin xyz="0 0 ${chassisHeight_2/2 + wheelRadius}" 
+					rpy="0 0 0"/>
+			<mass value="${chassisMass_2}"/>
+			<xacro:box_inertia 
+				m="${chassisMass_2}" 
+				x="${chassisLength_2}" 
+				y="${chassisWidth_2}" 
+				z="${chassisHeight_2}"/>
+			<!--inertia ixx="0.04" ixy="0.0" ixz="0.0" iyy="0.52" iyz="0.0" izz="0.52"/-->
+		</inertial>
+	</link>
+
+	<joint name="base_joint_2" type="fixed">
+		<parent link="chassis"/>
+		<child link="chassis_2"/>
+	</joint>
+
+	<gazebo reference="chassis">
+		<!--Stiffness -->
+		<kp>1000000.0</kp>
+		<!--Dampening-->
+		<kd>0.1</kd>
+		<dampingFactor>0</dampingFactor>
+		<material>Gazebo/Orange</material>
+		<selfCollide>true</selfCollide>
+		<turnGravityOff>false</turnGravityOff>
+		<mu1 value="0.1"/>
+		<mu2 value="0.1"/>
+		<fdir1 value="0 0 0"/>
+	</gazebo>
+	
+	<gazebo reference="chassis_2">
+		<!--Stiffness -->
+		<kp>1000000.0</kp>
+		<!--Dampening-->
+		<kd>0.1</kd>
+		<dampingFactor>0</dampingFactor>
+		<material>Gazebo/Orange</material>
+		<selfCollide>true</selfCollide>
+		<turnGravityOff>false</turnGravityOff>
+		<mu1 value="0.1"/>
+		<mu2 value="0.1"/>
+		<fdir1 value="0 0 0"/>
+	</gazebo>
+	<!-- Chassis END -->
+
+	<!-- Laser Sensor Start -->
+	<link name="sensor_laser">
+		<collision>
+			<origin xyz="0 0 0" 
+              rpy="0 0 0"/>
+			<geometry>
+				<cylinder radius="${lidarRadius}" length="${lidarLength}"/>
+			</geometry>
+		</collision>
+		<visual>
+			<origin xyz="0 0 0" 
+              rpy="0 0 0"/>
+			<geometry>
+				<cylinder radius="${lidarRadius}" length="${lidarLength}"/>
+			</geometry>
+			<material name="dark_grey"/>
+		</visual>
+		<inertial>
+			<mass value="${lidarMass}" />
+			<origin xyz="0 0 0" 
+              rpy="0 0 0"/>
+			<xacro:cylinder_inertia 
+          m="${lidarMass}" 
+          r="${lidarRadius}" 
+          h="${lidarLength}"/>
+			<!--inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/-->
+		</inertial>
+	</link>
+
+	<joint name="joint_sensor_laser" type="fixed">
+		<origin xyz="${chassisLength_2/2 - lidarOffsetX} 0 ${chassisHeight_2 + wheelRadius + lidarLength/2 + chassisHeight}" 
+            rpy="${PI} 0 0"/>
+		<parent link="chassis_2"/>
+		<child link="sensor_laser"/>
+	</joint>
+
+	<gazebo reference="sensor_laser">
+		<sensor type="ray" name="head_hokuyo_sensor">
+			<pose>0 0 0 0 0 0</pose>
+			<visualize>false</visualize>
+			<update_rate>20</update_rate>
+			<ray>
+				<scan>
+					<horizontal>
+						<samples>180</samples>	<!--samples>360</samples-->
+						<resolution>1</resolution>
+						<min_angle>${-PI/2}</min_angle>
+						<max_angle>${PI/2}</max_angle> <!--max_angle>${3*PI/2}</max_angle-->
+						<!-- -1.570796  4.712389-->
+					</horizontal>
+				</scan>
+				<range>
+					<min>0.10</min>
+					<max>15.0</max>
+					<resolution>0.01</resolution>
+				</range>
+				<noise>
+					<type>gaussian</type>
+					<mean>0.0</mean>
+					<stddev>0.01</stddev>
+				</noise>
+			</ray>
+			<plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
+				<topicName>/my_robot_description/laser/scan</topicName>
+				<frameName>sensor_laser</frameName>
+			</plugin>
+		</sensor>
+		<material>Gazebo/Grey</material>
+	</gazebo>
+	<!-- Laser Sensor End -->
+
+	<!-- Wheels Start
+        fb = front/back, front = 1, back  = -1
+        lr = left/right, left  = 1, right = -1  -->
+	<xacro:wheel fb="front" lr="left" fbvalue="1" lrvalue="1"/>
+	<xacro:wheel fb="front" lr="right" fbvalue="1" lrvalue="-1"/>
+	<xacro:wheel fb="back" lr="left" fbvalue="-1" lrvalue="1"/>
+	<xacro:wheel fb="back" lr="right" fbvalue="-1" lrvalue="-1"/>
+	<!-- Wheels End -->
+
+	<gazebo>
+		<plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+			<!-- robotNamespace>/my_robot</robotNamespace -->
+			<!-- legacyModeNS>true</legacyModeNS-->
+		</plugin>
+	</gazebo>
+</robot> 
