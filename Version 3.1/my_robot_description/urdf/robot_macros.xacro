@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+<robot name="my_robot_macros" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+	<xacro:macro name="cylinder_inertia" params="m r h">
+		<inertia  
+			ixx="${m*(3*r*r+h*h)/12}" 
+			ixy = "0" 
+			ixz = "0"
+			iyy="${m*(3*r*r+h*h)/12}" 
+			iyz = "0"
+			izz="${m*r*r/2}"
+		/>
+		<!--inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/-->
+	</xacro:macro>
+
+	<xacro:macro name="box_inertia" params="m x y z">
+		<inertia  
+			ixx="${m*(y*y+z*z)/12}" 
+			ixy = "0" 
+			ixz = "0"
+			iyy="${m*(x*x+z*z)/12}" 
+			iyz = "0"
+			izz="${m*(x*x+y*y)/12}"
+		/>
+	</xacro:macro>
+
+	<xacro:macro name="wheel" params="fb lr fbvalue lrvalue">
+		<link name="${fb}_${lr}_wheel">
+			<collision>
+				<origin xyz="0 0 0" 
+						rpy="0 1.5708 1.5708" />
+				<geometry>
+					<cylinder 
+						length="${wheelWidth}" 
+						radius="${wheelRadius}"/>
+				</geometry>
+			</collision>
+			<visual>
+				<origin xyz="0 0 0" 
+						rpy="0 1.5708 1.5708" />
+				<geometry>
+					<cylinder 
+						length="${wheelWidth}" 
+						radius="${wheelRadius}"/>
+				</geometry>
+				<material name="black"/>
+			</visual>
+			<inertial>
+				<origin xyz="0 0 0" 
+						rpy="0 1.5708 1.5708" />
+				<mass value="${wheelMass}"/>
+				<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.2" iyz="0.0" izz="0.4"/>
+				<!--xacro:cylinder_inertia 
+					m="${wheelMass}" 
+					r="${wheelRadius}" 
+					h="${wheelWidth}"/-->
+			</inertial>
+		</link>
+
+		<link name="${fb}_${lr}_wheel_assembly">
+			<collision>
+				<origin xyz="0 0 0" 
+						rpy="0 1.5708 1.5708" />
+				<geometry>
+					<cylinder 
+						length="${wheelassemblyWidth}" 
+						radius="${wheelassemblyRadius}"/>
+				</geometry>
+			</collision>
+			<visual>
+				<origin xyz="0 0 0" 
+						rpy="0 1.5708 1.5708" />
+				<geometry>
+					<cylinder 
+						length="${wheelassemblyWidth}" 
+						radius="${wheelassemblyRadius}"/>
+				</geometry>
+				<material name="white"/>
+			</visual>
+			<inertial>
+				<origin xyz="0 0 0" 
+						rpy="0 1.5708 1.5708" />
+				<mass value="${wheelassemblyMass}"/>
+				<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.2" iyz="0.0" izz="0.4"/>
+				<!--xacro:cylinder_inertia 
+					m="${wheelassemblyMass}"
+					r="${wheelassemblyRadius}" 
+					h="${wheelassemblyWidth}"/-->
+			</inertial>
+		</link>
+
+		<gazebo reference="${fb}_${lr}_wheel">
+			<mu1 value="2.0"/>
+			<mu2 value="2.0"/>
+			<kp  value="10000000.0" />
+			<kd  value="1.0" />
+			<fdir1 value="0 0 0"/>
+			<material>Gazebo/FlatBlack</material>
+		</gazebo>
+
+		<gazebo reference="${fb}_${lr}_wheel_assembly">
+			<mu1 value="2.0"/>
+			<mu2 value="2.0"/>
+			<kp  value="10000000.0" />
+			<kd  value="1.0" />
+			<fdir1 value="0 0 0"/>
+			<material>Gazebo/White</material>
+		</gazebo>
+
+		<joint name="${fb}_${lr}_wheel_rotate" type="continuous">
+			<parent link="${fb}_${lr}_wheel_assembly"/>
+			<child link="${fb}_${lr}_wheel"/>
+			<origin 
+				xyz = "0 ${lrvalue*(wheelWidth/2+wheelassemblyWidth/2)} 0" 
+				rpy = "0 0 0" />
+			<axis	xyz="0 1 0" 
+					rpy="0 0 0" />
+			<limit effort="1" velocity="10" />
+			<dynamics damping="0.0" friction="0.0"/>
+		</joint>
+
+		<joint name="${fb}_${lr}_wheel_revolute" type="revolute">
+			<parent link="chassis"/>
+			<child link="${fb}_${lr}_wheel_assembly"/>
+			<origin 
+				xyz = "${fbvalue*(0.5*chassisLength+wheelOffsetX)} ${lrvalue*(0.5*chassisWidth+wheelOffsetY)} ${wheelRadius}" 
+				rpy = "0 0 0" />
+			<axis	xyz="0 0 1" 
+					rpy="0 0 0" />
+			<limit effort="15" velocity="5" lower="-0.5" upper="0.5"/>
+			<dynamics damping="0.0" friction="0.0"/>
+		</joint>
+
+		<transmission name="trans_${fb}_${lr}_wheel_revolute">
+			<type>transmission_interface/SimpleTransmission</type>
+			<joint name="${fb}_${lr}_wheel_revolute">
+				<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+			</joint>
+			<actuator name="motor_${fb}_${lr}_wheel_revolute">
+				<hardwareInterface>EffortJointInterface</hardwareInterface>
+				<mechanicalReduction>1</mechanicalReduction>
+			</actuator>
+		</transmission>
+
+		<transmission name="trans_${fb}_${lr}_wheel_rotate">
+			<type>transmission_interface/SimpleTransmission</type>
+			<joint name="${fb}_${lr}_wheel_rotate">
+				<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+			</joint>
+			<actuator name="motor_${fb}_${lr}_wheel_rotate">
+				<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+				<mechanicalReduction>1</mechanicalReduction>
+			</actuator>
+		</transmission>
+	</xacro:macro>
+</robot>

@@ -1,0 +1,24 @@
+
+in terminal
+
+1- roslaunch my_robot_description spawn.launch
+
+2- rosrun my_robot_description main.py 
+
+3- roslaunch my_odom_publisher start_odom.launch
+
+
+4-rostopic echo /my_odom/pose/pose/orientation/z
+ or 
+ 
+ rostopic echo /my_odom/pose/pose/position/x
+ 
+ 
+ 
+useful links :
+
+https://answers.ros.org/question/222033/how-do-i-publish-gazebo-position-of-a-robot-model-on-odometry-topic/
+
+https://www.youtube.com/watch?v=I_5leJK8vhQ&ab_channel=TheConstruct
+ 
+
