@@ -1,0 +1,16 @@
+digraph G {
+"base_link" -> "chassis"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 827.644 sec old)\nBuffer length: 0.000 sec\n"];
+"chassis" -> "sensor_laser"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 827.644 sec old)\nBuffer length: 0.000 sec\n"];
+"chassis" -> "back_left_wheel_assembly"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10.227 Hz\nMost recent transform: 827.567 ( 0.077 sec old)\nBuffer length: 4.400 sec\n"];
+"back_left_wheel_assembly" -> "back_left_wheel"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10.227 Hz\nMost recent transform: 827.567 ( 0.077 sec old)\nBuffer length: 4.400 sec\n"];
+"chassis" -> "back_right_wheel_assembly"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10.227 Hz\nMost recent transform: 827.567 ( 0.077 sec old)\nBuffer length: 4.400 sec\n"];
+"back_right_wheel_assembly" -> "back_right_wheel"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10.227 Hz\nMost recent transform: 827.567 ( 0.077 sec old)\nBuffer length: 4.400 sec\n"];
+"chassis" -> "front_left_wheel_assembly"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10.227 Hz\nMost recent transform: 827.567 ( 0.077 sec old)\nBuffer length: 4.400 sec\n"];
+"front_left_wheel_assembly" -> "front_left_wheel"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10.227 Hz\nMost recent transform: 827.567 ( 0.077 sec old)\nBuffer length: 4.400 sec\n"];
+"chassis" -> "front_right_wheel_assembly"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10.227 Hz\nMost recent transform: 827.567 ( 0.077 sec old)\nBuffer length: 4.400 sec\n"];
+"front_right_wheel_assembly" -> "front_right_wheel"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10.227 Hz\nMost recent transform: 827.567 ( 0.077 sec old)\nBuffer length: 4.400 sec\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 827.644"[ shape=plaintext ] ;
+ }->"base_link";
+}
